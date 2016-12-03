@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css?family=Ubuntu:300');
+
+html, body {
+    min-height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: #181818;
+    color: #D3D3D3;
+}
+
+.wrapper{
+    height: 100%;
+}
+
+.term .termReverse{
+    position: absolute;
+    color: black;
+    background: white;
+}
+
+.term {
+    font-family: "Ubuntu", fixed, monospace;
+    font-size: 14px;
+    background: none;
+    color: white;
+    letter-spacing: 1px;
+}

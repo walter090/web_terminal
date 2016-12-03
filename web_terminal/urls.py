@@ -19,5 +19,7 @@ from terminal import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', )
+    url(r'^$', views.show_terminal),
+    url(r'^sample/', views.show_sample),
+    url(r'^get-list/', views.get_list),
 ]
