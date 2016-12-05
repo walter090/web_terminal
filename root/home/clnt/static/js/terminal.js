@@ -1,10 +1,15 @@
 var term;
 
-var dir = '/home/clnt/';
+var dir = '/home/clnt';
+
+var closedHint = '<p>' +
+    'The terminal is closed<br>' +
+    'Click <a id="reset">here</a>' +
+    ' to reopen it<br></p>';
 
 function termOpen() {
     if ((!term) || term.closed) {
-        var conf = {
+        let conf = {
             handler: cmdHandler,
             ps: '~$',
             cols: 800,
@@ -22,18 +27,30 @@ function termOpen() {
     }
 }
 
+function removeTip() {
+    document.getElementById('closed-hint').remove();
+    termOpen();
+}
+
 function cmdHandler() {
     var parser = new Parser();
     parser.parseLine(this);
     var cmd = this.argv[this.argc];
 
     this.newLine();
-    if (cmd == undefined){
-
+    if (cmd == undefined) {
     }
+
     else if (cmd == 'help') {
         this.write('help');
     }
+
+    else if (cmd == 'exit') {
+        this.close();
+        document.getElementById("closed-hint").innerHTML = closedHint;
+        document.getElementById("reset").onclick = removeTip;
+    }
+
     else if (cmd == 'char') {
         this.charMode = true;
         charModeHandler(this);
@@ -69,16 +86,19 @@ function cmdHandler() {
     }
 
     var dirList = dir.split('/');
-    if (dirList[1] == 'home' && dirList[2] == 'clnt'){
+    console.log(dir);
+    if (dirList[1] == 'home' && dirList[2] == 'clnt') {
         dirList.splice(0, 3);
         let homeDir = dirList.join('/');
-        if (homeDir == ''){
+        if (homeDir == '') {
             this.ps = '~$'
         } else {
-            this.ps = '~' + '/' + dirList.join('/') + '$';
+            this.ps = '~/' + dirList.join('/') + '$';
         }
+    } else if (dirList[1] == undefined) {
+        this.ps = '/$';
     } else {
-        this.ps = dir + '$';
+        this.ps = dirList.join('/') + '$';
     }
 
     this.prompt();
@@ -107,10 +127,9 @@ function cmdCd(term) {
             let message = data['message'];
             dir = data['dir'];
 
-            if (message != ''){
+            if (message != '') {
                 term.write(message);
             }
-            console.log(dir);
         }
     });
 }

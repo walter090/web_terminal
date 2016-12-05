@@ -5,42 +5,52 @@ def cmd_ls(directory):
     return '    '.join(os.listdir(directory))
 
 
+def prep_return(dict):
+    temp_list = dict['dir'].split('/')
+    temp_list.pop(0)
+    dict['dir'] = '/' + '/'.join(temp_list)
+    return dict
+
+
 def cmd_cd(current_dir, arg):
+    if current_dir == 'root/':
+        current_dir = 'root'
+
     return_dict = {'dir': current_dir, 'message': ''}
 
     if arg is None:
         return return_dict
 
     arg_list = arg.split('/')
-    target_dir = ''
+    return_dict['dir'] = ''
 
     if arg_list[0] == '':
-        target_dir = '/'
+        return_dict['dir'] = 'root'
         while arg_list[0] == '':
             if arg_list:
                 arg_list.pop(0)
                 if not arg_list:
-                    return_dict['dir'] = target_dir
-                    return return_dict
+                    return prep_return(return_dict)
 
         if not arg_list:
-            return_dict['dir'] = target_dir
-            return return_dict
+            return prep_return(return_dict)
 
     else:
-        target_dir = current_dir
+        return_dict['dir'] = current_dir + '/'
 
     for dirname in arg_list:
-        if dirname in os.listdir(target_dir):
-            target_dir = target_dir + dirname + '/'
+        if dirname == '.':
+            return_dict['dir'] = current_dir
+            return prep_return(return_dict)
+        if dirname == '..':
+            return_dict['dir'] = os.path.dirname(os.path.dirname(return_dict['dir']))
+            if return_dict['dir'] == 'root':
+                return prep_return(return_dict)
+            continue
+        if dirname in os.listdir(return_dict['dir']):
+            return_dict['dir'] = return_dict['dir'] + dirname
         else:
             return_dict['message'] = 'cd: ' + arg + ': No such file or directory'
-            return return_dict
+            return prep_return(return_dict)
 
-    dirlist = target_dir.split('/')
-    dirlist.pop(0)
-    dirlist.pop(-1)
-    dirstr = '/' + '/'.join(dirlist)
-    return_dict['dir'] = dirstr
-
-    return return_dict
+    return prep_return(return_dict)
