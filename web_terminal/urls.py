@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^$', views.show_terminal),
     url(r'^sample/', views.show_sample),
     url(r'^get-list/', views.get_list),
+    url(r'^change-dir/', views.change_dir),
 ]

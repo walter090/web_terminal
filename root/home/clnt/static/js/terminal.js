@@ -1,4 +1,7 @@
 var term;
+
+var dir = '/home/clnt/';
+
 function termOpen() {
     if ((!term) || term.closed) {
         var conf = {
@@ -25,7 +28,10 @@ function cmdHandler() {
     var cmd = this.argv[this.argc];
 
     this.newLine();
-    if (cmd == 'help') {
+    if (cmd == undefined){
+
+    }
+    else if (cmd == 'help') {
         this.write('help');
     }
     else if (cmd == 'char') {
@@ -43,6 +49,9 @@ function cmdHandler() {
     else if (cmd == 'clear') {
         cmdClear(this)
     }
+    else if (cmd == 'cd') {
+        cmdCd(this)
+    }
     // else if (cmd == 'll') {
     //     cmdLl(this);
     // }
@@ -55,6 +64,23 @@ function cmdHandler() {
     // else if (cmd == 'whoami' || cmd == 'who') {
     //     this.write('%c(@lightgrey)' + this.user);
     // }
+    else {
+        this.write(cmd + ': command not found');
+    }
+
+    var dirList = dir.split('/');
+    if (dirList[1] == 'home' && dirList[2] == 'clnt'){
+        dirList.splice(0, 3);
+        let homeDir = dirList.join('/');
+        if (homeDir == ''){
+            this.ps = '~$'
+        } else {
+            this.ps = '~' + '/' + dirList.join('/') + '$';
+        }
+    } else {
+        this.ps = dir + '$';
+    }
+
     this.prompt();
 }
 
@@ -62,13 +88,44 @@ function cmdClear(term) {
     term.clear();
 }
 
+function realURL(directory) {
+    return 'root' + directory;
+}
+
+function cmdCd(term) {
+    $.ajax({
+        type: "POST",
+        url: "/change-dir/",
+        async: false,
+        data: {
+            csrfmiddlewaretoken: Cookies.get('csrftoken'),
+            currentDir: realURL(dir),
+            command: term.argv[1]
+        },
+        success: function (response) {
+            let data = JSON.parse(response);
+            let message = data['message'];
+            dir = data['dir'];
+
+            if (message != ''){
+                term.write(message);
+            }
+            console.log(dir);
+        }
+    });
+}
+
 function cmdLs(term) {
     $.ajax({
         type: "POST",
         url: "/get-list/",
         async: false,
-        data: {csrfmiddlewaretoken: Cookies.get('csrftoken'), arg: 'afd'},
+        data: {
+            csrfmiddlewaretoken: Cookies.get('csrftoken'),
+            arg: realURL(dir) // pass the path of current file
+        },
         success: function (response) {
+            // update current directory
             term.write(response);
             term.newLine();
         }
