@@ -8,15 +8,24 @@ def cmd_ls(directory):
 def prep_return(dict):
     temp_list = dict['dir'].split('/')
     temp_list.pop(0)
+    try:
+        temp_list.pop(-1)
+    except Exception as e:
+        pass
     dict['dir'] = '/' + '/'.join(temp_list)
     return dict
 
 
+# not very dynamic, may need improvements
 def cmd_cd(current_dir, arg):
     if current_dir == 'root/':
         current_dir = 'root'
 
     return_dict = {'dir': current_dir, 'message': ''}
+
+    if arg == '~':
+        return_dict['dir'] = 'root/home/clnt/'
+        return prep_return(return_dict)
 
     if arg is None:
         return return_dict
@@ -31,7 +40,6 @@ def cmd_cd(current_dir, arg):
                 arg_list.pop(0)
                 if not arg_list:
                     return prep_return(return_dict)
-
         if not arg_list:
             return prep_return(return_dict)
 
@@ -48,7 +56,7 @@ def cmd_cd(current_dir, arg):
                 return prep_return(return_dict)
             continue
         if dirname in os.listdir(return_dict['dir']):
-            return_dict['dir'] = return_dict['dir'] + dirname
+            return_dict['dir'] = return_dict['dir'] + dirname + '/'
         else:
             return_dict['message'] = 'cd: ' + arg + ': No such file or directory'
             return prep_return(return_dict)

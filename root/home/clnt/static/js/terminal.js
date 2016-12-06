@@ -20,7 +20,7 @@ function termOpen() {
             wrapping: true,
             frameWidth: 0,
             ctrlHandler: controlHandler,
-            greeting: 'Welcome'
+            greeting: 'Welcome to web terminal, type \'help\' if you are lost.'
         };
         term = new Terminal(conf);
         term.open();
@@ -39,18 +39,16 @@ function cmdHandler() {
 
     this.newLine();
     if (cmd == undefined) {
+        // do nothing
     }
-
     else if (cmd == 'help') {
         this.write('help');
     }
-
     else if (cmd == 'exit') {
         this.close();
         document.getElementById("closed-hint").innerHTML = closedHint;
         document.getElementById("reset").onclick = removeTip;
     }
-
     else if (cmd == 'char') {
         this.charMode = true;
         charModeHandler(this);
@@ -59,15 +57,17 @@ function cmdHandler() {
         this.lock = false;
         return;
     }
-
     else if (cmd == 'ls') {
         cmdLs(this);
     }
     else if (cmd == 'clear') {
-        cmdClear(this)
+        cmdClear(this);
     }
     else if (cmd == 'cd') {
-        cmdCd(this)
+        cmdCd(this);
+    }
+    else if (cmd == 'pwd') {
+        cmdPwd(this);
     }
     // else if (cmd == 'll') {
     //     cmdLl(this);
@@ -102,6 +102,10 @@ function cmdHandler() {
     }
 
     this.prompt();
+}
+
+function cmdPwd(term) {
+    term.write(dir);
 }
 
 function cmdClear(term) {
