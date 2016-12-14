@@ -17,14 +17,18 @@
     <link rel="stylesheet" type="text/css" href="{% static "css/term_styles.css" %}">
 {% endblock %}
 <body>
-<div class="wrapper">
-    {% block content %}
-        <div id="closed-hint"></div>
-        <div id="termDiv" class="terminal"></div>
-        <script type="text/javascript">
-            termOpen();
-        </script>
-    {% endblock %}
-</div>
+{% block content %}
+    <div class="bgimg-1">
+        <div class="caption">
+            <span class="border"></span>
+        </div>
+    </div>
+
+    <div id="closed-hint"></div>
+    <div id="termDiv" class="terminal"></div>
+    <script type="text/javascript">
+        termOpen();
+    </script>
+{% endblock %}
 </body>
 </html>

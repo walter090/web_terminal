@@ -9,7 +9,13 @@ html, body {
     font-family: Ubuntu, monospace;
 }
 
-.wrapper{
+.bgimg-1 {
+  background-image: url("../image/shore.jpg");
+  min-height: 100%;
+}
+
+
+#termDiv{
     height: 100%;
     padding: 0.5em;
 }

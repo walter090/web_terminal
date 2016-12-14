@@ -4,8 +4,18 @@ var dir = '/home/clnt';
 
 var closedHint = '<p>' +
     'The terminal is closed<br>' +
-    'Click <a id="reset">here</a>' +
+    'Click <a id="reset">HERE</a>' +
     ' to reopen it<br></p>';
+
+var helpText = [
+    'Commands:',
+    'help                                       Print this help page',
+    'exit                                        Close the terminal'
+];
+
+var info = [
+
+];
 
 function termOpen() {
     if ((!term) || term.closed) {
@@ -23,6 +33,7 @@ function termOpen() {
             greeting: 'Welcome to web terminal, type \'help\' if you are lost.'
         };
         term = new Terminal(conf);
+        term.user = 'clnt';
         term.open();
     }
 }
@@ -42,7 +53,7 @@ function cmdHandler() {
         // do nothing
     }
     else if (cmd == 'help') {
-        this.write('help');
+        this.write(helpText);
     }
     else if (cmd == 'exit') {
         this.close();
@@ -69,6 +80,9 @@ function cmdHandler() {
     else if (cmd == 'pwd') {
         cmdPwd(this);
     }
+    else if (cmd == 'man') {
+        cmdMan(this);
+    }
     // else if (cmd == 'll') {
     //     cmdLl(this);
     // }
@@ -78,9 +92,9 @@ function cmdHandler() {
     // else if (cmd == 'uname') {
     //     cmdUname(this);
     // }
-    // else if (cmd == 'whoami' || cmd == 'who') {
-    //     this.write('%c(@lightgrey)' + this.user);
-    // }
+    else if (cmd == 'whoami') {
+        this.write('%c(@lightgrey)' + this.user);
+    }
     else {
         this.write(cmd + ': command not found');
     }
@@ -102,6 +116,10 @@ function cmdHandler() {
     }
 
     this.prompt();
+}
+
+function cmdMan(term) {
+    term.write('No manual entry for ' + term.argv[1]);
 }
 
 function cmdPwd(term) {
