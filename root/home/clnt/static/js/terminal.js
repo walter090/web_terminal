@@ -95,6 +95,9 @@ function cmdHandler() {
     else if (cmd == 'whoami') {
         this.write('%c(@lightgrey)' + this.user);
     }
+    else if (cmd == 'sudo') {
+        this.write('You have no power here!');
+    }
     else {
         this.write(cmd + ': command not found');
     }
